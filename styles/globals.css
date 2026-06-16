@@ -1,0 +1,209 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&family=DM+Mono:wght@300;400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Light theme base: background shades (keeps variable names for compatibility) */
+  --hod-black: #f7f7f7;   /* page background (light) */
+  --hod-dark: #f2f2f2;
+  --hod-gray: #ffffff;
+  --hod-mid: #e9e9e9;
+  --hod-silver: #8a8a8a;
+  --hod-light: #c8c8c8;
+  --hod-white: #0a0a0a;   /* primary text color (dark) */
+  --hod-accent: #d4af37;
+  --transition-luxury: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--hod-black);
+  color: var(--hod-white);
+  font-family: 'DM Sans', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 3px;
+}
+::-webkit-scrollbar-track {
+  background: var(--hod-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--hod-mid);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--hod-silver);
+}
+
+/* Selection */
+::selection {
+  background: rgba(212, 175, 55, 0.25);
+  color: var(--hod-white);
+}
+
+/* Utility classes */
+.clip-text {
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Video overlay */
+.video-overlay {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.02) 0%,
+    rgba(0, 0, 0, 0.04) 40%,
+    rgba(0, 0, 0, 0.10) 80%,
+    rgba(0, 0, 0, 0.18) 100%
+  );
+}
+
+/* Nav blur */
+.nav-blur {
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(255, 255, 255, 0.75);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Card image zoom */
+.card-image-container {
+  overflow: hidden;
+}
+.card-image-container img,
+.card-image-container .card-bg {
+  transition: transform 0.8s var(--transition-luxury), filter 0.8s var(--transition-luxury);
+}
+.card-image-container:hover img,
+.card-image-container:hover .card-bg {
+  transform: scale(1.06);
+  filter: brightness(0.85);
+}
+
+/* Arrow button */
+.arrow-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.06);
+  border: 1px solid rgba(0,0,0,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+  flex-shrink: 0;
+}
+.arrow-btn:hover {
+  background: rgba(0,0,0,0.10);
+  border-color: rgba(0,0,0,0.16);
+  transform: scale(1.08);
+}
+
+/* Porsche-style outline button */
+.outline-btn {
+  border: 1px solid rgba(0,0,0,0.6);
+  color: var(--hod-white);
+  padding: 14px 40px;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: background 0.35s var(--transition-luxury), color 0.35s var(--transition-luxury), border-color 0.35s var(--transition-luxury);
+  background: transparent;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  display: inline-block;
+}
+.outline-btn:hover {
+  background: var(--hod-white);
+  color: var(--hod-black);
+  border-color: var(--hod-white);
+}
+
+/* Accent button */
+.accent-btn {
+  border: 1px solid var(--hod-accent);
+  color: var(--hod-accent);
+  padding: 14px 40px;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: background 0.35s var(--transition-luxury), color 0.35s var(--transition-luxury);
+  background: transparent;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  display: inline-block;
+}
+.accent-btn:hover {
+  background: var(--hod-accent);
+  color: var(--hod-black);
+}
+
+/* Section label */
+.section-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--hod-silver);
+  font-family: 'DM Mono', monospace;
+  font-weight: 300;
+}
+
+/* Scroll indicator */
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50% { transform: translateY(8px); opacity: 0.4; }
+}
+.scroll-indicator {
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+
+/* Testimonial quote mark */
+.quote-mark {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 12rem;
+  line-height: 0.7;
+  color: rgba(212, 175, 55, 0.08);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Noise grain overlay */
+.grain-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.06;
+}
+
+/* Horizontal rule */
+.hod-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.06), transparent);
+}
