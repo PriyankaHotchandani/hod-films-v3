@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>House of Doshi Films — Premium Film Production, Mumbai</title>
+        <title>House of Doshi Films</title>
         <meta name="description" content="House of Doshi Films is Mumbai's premier film production house. Feature films, brand films, short films, and music videos crafted with cinematic precision." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.png" />

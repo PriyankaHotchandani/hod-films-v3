@@ -24,7 +24,7 @@ export default function HeroSection() {
   }
 
   return (
-    <section className="relative w-full h-screen min-h-[600px] overflow-hidden bg-hod-black">
+    <section className="relative w-full h-[100dvh] min-h-[500px] md:min-h-[600px] overflow-hidden bg-hod-black">
 
       {/* ── VIDEO BACKGROUND ── */}
       <div className="absolute inset-0 z-0 bg-hod-black">

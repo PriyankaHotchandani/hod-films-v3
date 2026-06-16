@@ -2,28 +2,28 @@
 
 export default function Footer() {
   return (
-    <footer className="bg-hod-black border-t border-black/5 py-20 px-8 md:px-16 lg:px-20 overflow-hidden">
+    <footer className="bg-hod-black border-t border-black/5 py-10 px-8 md:px-16 lg:px-20 overflow-hidden">
       <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
 
         {/* Logo / Brand */}
-        <div className="mb-6 mt-10">
+        <div className="mb-4 mt-4">
           <div
             style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '0.2em', fontSize: '1.8rem' }}
             className="text-hod-white"
           >
             HOUSE OF DOSHI
           </div>
-          <div className="section-label mt-2" style={{ letterSpacing: '0.4em', fontSize: '0.65rem' }}>
+          <div className="section-label mt-1" style={{ letterSpacing: '0.4em', fontSize: '0.65rem' }}>
             FILMS
           </div>
         </div>
 
-        <p className="text-hod-silver text-sm leading-relaxed font-light max-w-sm mb-24" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+        <p className="text-hod-silver text-sm leading-relaxed font-light max-w-sm mb-10" style={{ fontFamily: "'DM Sans', sans-serif" }}>
           Premium film production. Mumbai-based, globally minded.
         </p>
 
         {/* Divider */}
-        <div className="hod-divider w-full max-w-3xl mb-8" />
+        <div className="hod-divider w-full max-w-3xl mb-6" />
 
         {/* Bottom row */}
         <div className="section-label" style={{ fontSize: '0.58rem' }}>
@@ -31,11 +31,11 @@ export default function Footer() {
         </div>
 
         {/* Giant watermark text */}
-        <div className="mt-16 w-full flex justify-center">
+        <div className="mt-8 w-full flex justify-center">
           <div
             style={{
               fontFamily: "'Bebas Neue', sans-serif",
-              fontSize: 'clamp(4rem, 18vw, 15rem)',
+              fontSize: 'clamp(4rem, 12vw, 10rem)',
               letterSpacing: '0.03em',
               lineHeight: 0.8,
               color: 'rgba(10,10,10,0.04)',

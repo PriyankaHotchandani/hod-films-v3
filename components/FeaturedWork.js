@@ -1,5 +1,5 @@
 'use client'
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
 import Image from 'next/image'
 
@@ -296,16 +296,9 @@ function GridRow({ rowProjects }) {
     <div style={{
       display: 'flex',
       gap: '12px',
-      // overflow:hidden here is the hard container — no card can bleed out
       overflow: 'hidden',
       width: '100%',
     }}>
-      {/*
-        Square spacer row: a hidden flex row underneath that sets the row height.
-        Both spacers are always equal halves → height = (containerWidth - gap) / 2.
-        The actual cards are absolutely positioned to fill this height.
-        Simpler approach: just use a wrapper with a fixed aspect-ratio.
-      */}
       {rowProjects.map((project) => (
         <ProjectCard
           key={project.id}
@@ -319,9 +312,6 @@ function GridRow({ rowProjects }) {
   )
 }
 
-// ─────────────────────────────────────────────
-// SECTION HEADER
-// ─────────────────────────────────────────────
 function SectionHeader() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-80px' })
@@ -332,7 +322,8 @@ function SectionHeader() {
       initial={{ opacity: 0 }}
       animate={isInView ? { opacity: 1 } : { opacity: 0 }}
       transition={{ duration: 0.6 }}
-      style={{ display: 'flex', flexDirection: 'column', gap: '0', marginBottom: '48px' }}
+      style={{ marginBottom: '48px' }}
+      className="flex flex-col gap-0"
     >
 
       {/* Headline line 1 */}
@@ -355,13 +346,9 @@ function SectionHeader() {
       </div>
 
       {/* Headline line 2 + tagline block */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'flex-end',
-        justifyContent: 'space-between',
-        gap: '24px',
-      }}>
-        <div style={{ overflow: 'hidden' }}>
+      {/* ADDED: Tailwind classes to handle responsive stacking */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 mt-1 md:mt-0">
+        <div style={{ overflow: 'hidden', paddingRight: '12px' }}>
           <motion.h2
             initial={{ opacity: 0, y: 60 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 60 }}
@@ -373,6 +360,7 @@ function SectionHeader() {
               lineHeight: 0.95,
               color: '#6a6a6a',
               margin: 0,
+              whiteSpace: 'nowrap', // Ensures text never wraps and clips
             }}
           >
             we’ve told…
@@ -383,25 +371,22 @@ function SectionHeader() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.85, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-end',
-            gap: '16px',
-            flexShrink: 0,
-            maxWidth: '260px',
-          }}
+          // ADDED: Tailwind classes to align left on mobile, right on desktop
+          className="flex flex-col items-start md:items-end shrink-0 md:max-w-[260px] pt-2 md:pt-0"
         >
-          <p style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: '13px',
-            fontWeight: '300',
-            lineHeight: 1.65,
-            color: '#6a6a6a',
-            textAlign: 'right',
-            margin: 0,
-          }}>
-            Walkthroughs, Music Videos, Documentaries and Brand Films. <br />
+          <p
+            // ADDED: Text alignment controlled by screen size
+            className="text-left md:text-right"
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: '13px',
+              fontWeight: '300',
+              lineHeight: 1.65,
+              color: '#6a6a6a',
+              margin: 0,
+            }}
+          >
+            Walkthroughs, Music Videos, Documentaries and Brand Films. <br className="hidden md:block" />
             Let’s start storytelling…
           </p>
         </motion.div>
@@ -411,89 +396,124 @@ function SectionHeader() {
 }
 
 function MobileCard({ project }) {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: '-40px' })
+  const cardRef = useRef(null)
+  const videoRef = useRef(null)
+
+  // Fade-in animation for the card itself
+  const isCardInView = useInView(cardRef, { once: true, margin: '-40px' })
+
+  // Video playback trigger: Checks if at least 50% of the card is visible on screen
+  const isVideoInView = useInView(cardRef, { amount: 0.5 })
+
+  // Automatically play or pause the video based on scroll position
+  useEffect(() => {
+    if (videoRef.current && project.videoSrc) {
+      if (isVideoInView) {
+        videoRef.current.play().catch(() => { })
+      } else {
+        videoRef.current.pause()
+      }
+    }
+  }, [isVideoInView, project.videoSrc])
 
   return (
     <motion.div
-      ref={ref}
+      ref={cardRef}
       initial={{ opacity: 0, y: 28 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
+      animate={isCardInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
     >
-      {/* ── Removed the <a> tag wrapper ── */}
       <div style={{
         borderRadius: '10px',
         overflow: 'hidden',
         background: project.bgGradient,
         position: 'relative',
-        aspectRatio: '4 / 3',
+        // Taller aspect ratio prevents text crushing on long titles
+        aspectRatio: '1 / 1',
       }}>
-        {project.imageSrc ? (
-          <Image src={project.imageSrc} alt={project.title} fill style={{ objectFit: 'cover' }} />
-        ) : (
-          <div style={{
-            position: 'absolute', inset: 0,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <span style={{
-              fontFamily: "'DM Mono', monospace",
-              fontSize: '9px',
-              letterSpacing: '0.22em',
-              textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.12)',
-              textAlign: 'center',
-              padding: '0 20px',
+
+        {/* ── Layer 1: Image (Fades out when video plays) ── */}
+        <motion.div
+          animate={{ opacity: isVideoInView && project.videoSrc ? 0 : 1 }}
+          transition={{ duration: 0.5 }}
+          style={{ position: 'absolute', inset: 0 }}
+        >
+          {project.imageSrc ? (
+            <Image src={project.imageSrc} alt={project.title} fill style={{ objectFit: 'cover' }} />
+          ) : (
+            <div style={{
+              position: 'absolute', inset: 0,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
-              {project.assetLabel}
-            </span>
-          </div>
+              <span style={{
+                fontFamily: "'DM Mono', monospace", fontSize: '9px', letterSpacing: '0.22em',
+                textTransform: 'uppercase', color: 'rgba(255,255,255,0.12)', padding: '0 20px', textAlign: 'center'
+              }}>
+                {project.assetLabel}
+              </span>
+            </div>
+          )}
+        </motion.div>
+
+        {/* ── Layer 2: Video Player (Autoplays on scroll) ── */}
+        {project.videoSrc && (
+          <motion.video
+            ref={videoRef}
+            src={project.videoSrc}
+            loop
+            muted
+            playsInline
+            preload="none"
+            poster={project.imageSrc || undefined}
+            animate={{ opacity: isVideoInView ? 1 : 0 }}
+            transition={{ duration: 0.5 }}
+            style={{
+              position: 'absolute', inset: 0, width: '100%', height: '100%',
+              objectFit: 'cover', objectPosition: 'center',
+            }}
+          />
         )}
 
+        {/* ── Layer 3: Protective Bottom Gradient ── */}
         <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0, height: '55%',
-          background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%)',
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 45%, transparent 100%)',
           zIndex: 2,
+          pointerEvents: 'none',
         }} />
 
+        {/* ── Layer 4: Text Content (Stacked safely at the bottom) ── */}
         <div style={{
-          position: 'absolute', top: '20px', left: 0, right: 0,
-          zIndex: 3, textAlign: 'center',
+          position: 'absolute', bottom: 0, left: 0, right: 0,
+          zIndex: 3, padding: '24px 20px',
+          display: 'flex', flexDirection: 'column', gap: '14px',
+          pointerEvents: 'none',
         }}>
+          {/* Title */}
           <span style={{
             fontFamily: "'Bebas Neue', sans-serif",
-            fontSize: '1.8rem',
-            letterSpacing: '0.08em',
+            fontSize: 'clamp(1.8rem, 6vw, 2.2rem)',
+            letterSpacing: '0.05em',
             color: 'rgba(255,255,255,0.95)',
-            lineHeight: 1,
+            lineHeight: 1.05,
+            textShadow: '0 2px 10px rgba(0,0,0,0.5)',
           }}>
             {project.title}
           </span>
+
+          {/* Tags */}
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', height: '26px', padding: '0 12px',
+              borderRadius: '100px', background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)',
+              fontFamily: "'DM Mono', monospace", fontSize: '10px', letterSpacing: '0.12em',
+              textTransform: 'uppercase', color: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(4px)',
+            }}>
+              {!project.available ? 'In Production' : project.tags[0]}
+            </span>
+          </div>
         </div>
 
-        <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0,
-          zIndex: 4, padding: '0 18px 18px',
-          display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '12px',
-        }}>
-          <span style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            height: '22px',
-            padding: '0 10px',
-            borderRadius: '100px',
-            background: 'rgba(255,255,255,0.09)',
-            border: '1px solid rgba(255,255,255,0.15)',
-            fontFamily: "'DM Mono', monospace",
-            fontSize: '9px',
-            letterSpacing: '0.12em',
-            textTransform: 'uppercase',
-            color: 'rgba(255,255,255,0.65)',
-          }}>
-            {!project.available ? 'In Production' : project.tags[0]}
-          </span>
-          {/* ── Arrow Icon Removed Entirely ── */}
-        </div>
       </div>
     </motion.div>
   )
