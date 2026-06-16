@@ -2,14 +2,56 @@
 import { useRef, useEffect, useState } from 'react'
 import { motion, animate, useMotionValue } from 'framer-motion'
 
+const CLOUDINARY_BASE = 'https://res.cloudinary.com/drmwtarrs/video/upload'
+const SRC_720 = `${CLOUDINARY_BASE}/w_1280,q_65,f_auto/hod/hero/SHOWREEL_4K.mp4`
+const SRC_1080 = `${CLOUDINARY_BASE}/w_1920,q_70,f_auto/hod/hero/SHOWREEL_4K.mp4`
+
 export default function HeroSection() {
   const videoRef = useRef(null)
   const [paused, setPaused] = useState(false)
   const [muted, setMuted] = useState(true)
 
+  // Always start at 720p for fast first-paint on any connection
+  const [videoSrc, setVideoSrc] = useState(SRC_720)
+
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(() => { })
+    const video = videoRef.current
+    if (!video) return
+
+    // Once the 720p version is playing, silently preload 1080p in the background.
+    // When it's ready, swap — the video keeps playing without interruption.
+    function upgradeToHD() {
+      // Only upgrade on non-mobile screens and decent connections
+      const isMobile = window.innerWidth <= 767
+      const slowConn = navigator.connection?.effectiveType === '2g' ||
+        navigator.connection?.effectiveType === 'slow-2g'
+      if (isMobile || slowConn) return
+
+      const preload = document.createElement('video')
+      preload.src = SRC_1080
+      preload.preload = 'auto'
+      preload.muted = true
+
+      preload.addEventListener('canplaythrough', () => {
+        // Capture current playback position so upgrade is seamless
+        const currentTime = video.currentTime
+        setVideoSrc(SRC_1080)
+        // Restore position after React re-renders the new src
+        requestAnimationFrame(() => {
+          if (videoRef.current) {
+            videoRef.current.currentTime = currentTime
+            videoRef.current.play().catch(() => { })
+          }
+        })
+      }, { once: true })
+    }
+
+    // Wait until 720p is playing before starting the upgrade preload
+    video.addEventListener('playing', upgradeToHD, { once: true })
+    video.play().catch(() => { })
+
+    return () => {
+      video.removeEventListener('playing', upgradeToHD)
     }
   }, [])
 
@@ -30,30 +72,17 @@ export default function HeroSection() {
       <div className="absolute inset-0 z-0 bg-hod-black">
         <video
           ref={videoRef}
+          key={videoSrc}
           className="w-full h-full object-cover"
           autoPlay
           muted
           loop
           playsInline
-        >
-          {/* Mobile — 480p, aggressive compression */}
-          <source
-            src="https://res.cloudinary.com/drmwtarrs/video/upload/w_480,q_40,f_auto/hod/hero/SHOWREEL_4K.mp4"
-            type="video/mp4"
-            media="(max-width: 767px)"
-          />
-          {/* Tablet — 720p */}
-          <source
-            src="https://res.cloudinary.com/drmwtarrs/video/upload/w_1280,q_55,f_auto/hod/hero/SHOWREEL_4K.mp4"
-            type="video/mp4"
-            media="(max-width: 1279px)"
-          />
-          {/* Desktop — 1080p, still crisp and much faster than 4K */}
-          <source
-            src="https://res.cloudinary.com/drmwtarrs/video/upload/w_1920,q_70,f_auto/hod/hero/SHOWREEL_4K.mp4"
-            type="video/mp4"
-          />
-        </video>
+          controls={false}
+          disablePictureInPicture
+          disableRemotePlayback
+          src={videoSrc}
+        />
 
         {/* Film grain has been completely removed to preserve 4K sharpness */}
       </div>
