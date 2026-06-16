@@ -289,40 +289,36 @@ export default function ContactCTA() {
           </div>
         </FadeUp>
 
-        {/* Secondary — phone */}
+        {/* Secondary — phone & email */}
         <FadeUp delay={0.32}>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <a
-              href="tel:+918291933663"
+            <div
               style={{
                 fontFamily: "'DM Mono', monospace",
                 fontSize: '0.62rem',
                 letterSpacing: '0.18em',
                 textTransform: 'uppercase',
-                color: 'rgba(245,245,240,0.25)',
-                textDecoration: 'none',
-                transition: 'color 0.3s ease',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.5rem',
               }}
-              onMouseEnter={e => e.currentTarget.style.color = 'rgba(245,245,240,0.6)'}
-              onMouseLeave={e => e.currentTarget.style.color = 'rgba(245,245,240,0.25)'}
             >
-              <a href="mailto:mehul@houseofdoshi.com" className="section-label text-white/60 hover:text-white transition-colors">
+              <a href="mailto:mehul@houseofdoshi.com" className="section-label text-white/60 hover:text-white transition-colors" style={{ textDecoration: 'none' }}>
                 mehul@houseofdoshi.com
               </a>
+
               <span className="section-label text-white/30 hidden sm:block">·</span>
-              <a href="tel:+918291933663" className="section-label text-white/60 hover:text-white transition-colors">
+
+              <a href="tel:+918291933663" className="section-label text-white/60 hover:text-white transition-colors flex items-center gap-2" style={{ textDecoration: 'none' }}>
                 +91 82919 33663
+                <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                  <path d="M1 11L11 1M11 1H4M11 1V8" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </a>
-              <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
-                <path d="M1 11L11 1M11 1H4M11 1V8" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </a>
+            </div>
           </div>
         </FadeUp>
-      </div>
+      </div> {/* <--- THIS IS THE MISSING DIV THAT CLOSES THE MAIN CONTENT */}
 
       {/* ── Footer Row — Film Slate ── */}
       <div

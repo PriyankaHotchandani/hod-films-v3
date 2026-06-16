@@ -45,12 +45,14 @@ function MarqueeTrack({ brands, speed = 38 }) {
     <motion.div
       ref={trackRef}
       style={{ x }}
-      className="flex items-center gap-16 will-change-transform"
+      className="flex items-center w-max will-change-transform"
       onMouseEnter={() => (isPaused.current = true)}
       onMouseLeave={() => (isPaused.current = false)}
     >
       {doubled.map((brand, i) => (
-        <BrandLogo key={`${brand.id}-${i}`} brand={brand} />
+        <div key={`${brand.id}-${i}`} className="pr-16 flex-shrink-0">
+          <BrandLogo brand={brand} />
+        </div>
       ))}
     </motion.div>
   );
@@ -62,7 +64,7 @@ function MarqueeTrack({ brands, speed = 38 }) {
 function BrandLogo({ brand }) {
   return (
     <motion.div
-      className="group relative flex-shrink-0 flex items-center justify-center
+      className="group relative flex items-center justify-center
                  px-4 py-2 cursor-default select-none"
       whileHover={{ scale: 1.06 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -74,10 +76,7 @@ function BrandLogo({ brand }) {
         aria-hidden="true"
       />
 
-      {/* Logo image
-          - grayscale at rest, full color (or near-full) on hover
-          - opacity: low at rest, full on hover
-          - object-contain keeps proportions regardless of image dimensions     */}
+      {/* Logo image */}
       <img
         src={brand.logo}
         alt={brand.name}
@@ -91,14 +90,12 @@ function BrandLogo({ brand }) {
   );
 }
 
-// ─────────────────────────────────────────────
-// MAIN EXPORT
-// ─────────────────────────────────────────────
 export default function ClientBrandsMarquee() {
   return (
     <section
+      id="brands"
       aria-label="Clients we've worked with"
-      className="relative w-full overflow-hidden bg-white py-10"
+      className="relative w-full overflow-hidden bg-white py-10 scroll-mt-20 md:scroll-mt-24"
     >
       {/* ── Top hairline ── */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-black/10 to-transparent" />

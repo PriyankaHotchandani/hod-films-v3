@@ -15,7 +15,7 @@ export default function Home() {
         <title>House of Doshi Films — Premium Film Production, Mumbai</title>
         <meta name="description" content="House of Doshi Films is Mumbai's premier film production house. Feature films, brand films, short films, and music videos crafted with cinematic precision." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" />
 
         {/* Open Graph */}
         <meta property="og:title" content="House of Doshi Films" />
