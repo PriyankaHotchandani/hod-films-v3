@@ -22,22 +22,29 @@ const HOD_STYLES = `
   }
 
   .hod-quote-text {
-    min-height: 380px !important; 
-    height: 380px !important;
+    /* Expanding canvas for desktop — no scrollbars ever */
+    min-height: 450px !important; 
+    height: auto !important;
+    overflow-y: visible !important;
+    
     display: flex;
-    align-items: center;
-    overflow-y: auto; 
+    flex-direction: column;
+    justify-content: center; /* Centers shorter quotes beautifully in the large space */
   }
 
   @media (max-width: 768px) {
     .hod-quote-text { 
         font-size: 1.15rem !important; 
-        /* Strict height keeps the layout locked */
+        
+        /* Locked height for mobile with internal scrolling */
         height: 380px !important; 
         min-height: 380px !important;
-        /* Enables scrolling for long quotes like Parth's */
-        overflow-y: auto; 
-        /* Clean scrollbar for modern feel */
+        overflow-y: auto !important;
+        
+        /* Forces text to start at the top so it doesn't clip when scrolling */
+        justify-content: flex-start !important; 
+        
+        /* Hide scrollbar visually for a cleaner look */
         scrollbar-width: none; 
         -ms-overflow-style: none;
     }
