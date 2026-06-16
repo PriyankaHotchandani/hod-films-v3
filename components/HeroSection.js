@@ -35,9 +35,24 @@ export default function HeroSection() {
           muted
           loop
           playsInline
-          src="https://res.cloudinary.com/drmwtarrs/video/upload/f_auto,q_auto/hod/hero/SHOWREEL_4K.mp4"
         >
-          <source src="https://res.cloudinary.com/drmwtarrs/video/upload/f_auto,q_auto/hod/hero/SHOWREEL_4K.mp4" type="video/mp4" />
+          {/* Mobile — 480p, aggressive compression */}
+          <source
+            src="https://res.cloudinary.com/drmwtarrs/video/upload/w_480,q_40,f_auto/hod/hero/SHOWREEL_4K.mp4"
+            type="video/mp4"
+            media="(max-width: 767px)"
+          />
+          {/* Tablet — 720p */}
+          <source
+            src="https://res.cloudinary.com/drmwtarrs/video/upload/w_1280,q_55,f_auto/hod/hero/SHOWREEL_4K.mp4"
+            type="video/mp4"
+            media="(max-width: 1279px)"
+          />
+          {/* Desktop — 1080p, still crisp and much faster than 4K */}
+          <source
+            src="https://res.cloudinary.com/drmwtarrs/video/upload/w_1920,q_70,f_auto/hod/hero/SHOWREEL_4K.mp4"
+            type="video/mp4"
+          />
         </video>
 
         {/* Film grain has been completely removed to preserve 4K sharpness */}
