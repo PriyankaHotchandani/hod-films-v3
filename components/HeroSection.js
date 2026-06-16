@@ -35,10 +35,9 @@ export default function HeroSection() {
           muted
           loop
           playsInline
-          poster="/images/hero-poster.jpg"
-          src="/assets/SHOWREEL_4K.mp4"
+          src="https://res.cloudinary.com/drmwtarrs/video/upload/f_auto,q_auto/hod/hero/SHOWREEL_4K.mp4"
         >
-          <source src="/assets/SHOWREEL_4K.mp4" type="video/mp4" />
+          <source src="https://res.cloudinary.com/drmwtarrs/video/upload/f_auto,q_auto/hod/hero/SHOWREEL_4K.mp4" type="video/mp4" />
         </video>
 
         {/* Film grain has been completely removed to preserve 4K sharpness */}

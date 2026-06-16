@@ -4,19 +4,19 @@ import { useRef } from "react";
 import { motion, useAnimationFrame, useMotionValue } from "framer-motion";
 
 const CLIENT_BRANDS = [
-  { id: 1, name: "Client 11", logo: "/assets/CLIENT_LOGOS/somaiya_TRUST.png" },
-  { id: 2, name: "Client 1", logo: "/assets/CLIENT_LOGOS/AASHIANA_ESTATE.png" },
-  { id: 3, name: "Client 2", logo: "/assets/CLIENT_LOGOS/EARTHBOURN.png" },
-  { id: 4, name: "Client 8", logo: "/assets/CLIENT_LOGOS/KJSIM.png" },
-  { id: 5, name: "Client 3", logo: "/assets/CLIENT_LOGOS/FG.png" },
-  { id: 6, name: "Client 4", logo: "/assets/CLIENT_LOGOS/GODREJ_AGROVET.png" },
-  { id: 7, name: "Client 12", logo: "/assets/CLIENT_LOGOS/SSA.png" },
-  { id: 8, name: "Client 6", logo: "/assets/CLIENT_LOGOS/INKA.png" },
-  { id: 9, name: "Client 7", logo: "/assets/CLIENT_LOGOS/KEFI.png" },
-  { id: 10, name: "Client 5", logo: "/assets/CLIENT_LOGOS/HOSPITAL.png" },
-  { id: 11, name: "Client 9", logo: "/assets/CLIENT_LOGOS/PARKSONS.png" },
-  { id: 13, name: "Client 13", logo: "/assets/CLIENT_LOGOS/SVU.png" },
-  { id: 12, name: "Client 10", logo: "/assets/CLIENT_LOGOS/Phoenix_Insurance.png" },
+  { id: 1,  name: "Client 11", logo: "https://res.cloudinary.com/drmwtarrs/image/upload/f_auto,q_auto/hod/logos/somaiya_TRUST.png" },
+  { id: 2,  name: "Client 1",  logo: "https://res.cloudinary.com/drmwtarrs/image/upload/f_auto,q_auto/hod/logos/AASHIANA_ESTATE.png" },
+  { id: 3,  name: "Client 2",  logo: "https://res.cloudinary.com/drmwtarrs/image/upload/f_auto,q_auto/hod/logos/EARTHBOURN.png" },
+  { id: 4,  name: "Client 8",  logo: "https://res.cloudinary.com/drmwtarrs/image/upload/f_auto,q_auto/hod/logos/KJSIM.png" },
+  { id: 5,  name: "Client 3",  logo: "https://res.cloudinary.com/drmwtarrs/image/upload/f_auto,q_auto/hod/logos/FG.png" },
+  { id: 6,  name: "Client 4",  logo: "https://res.cloudinary.com/drmwtarrs/image/upload/f_auto,q_auto/hod/logos/GODREJ_AGROVET.png" },
+  { id: 7,  name: "Client 12", logo: "https://res.cloudinary.com/drmwtarrs/image/upload/f_auto,q_auto/hod/logos/SSA.png" },
+  { id: 8,  name: "Client 6",  logo: "https://res.cloudinary.com/drmwtarrs/image/upload/f_auto,q_auto/hod/logos/INKA.png" },
+  { id: 9,  name: "Client 7",  logo: "https://res.cloudinary.com/drmwtarrs/image/upload/f_auto,q_auto/hod/logos/KEFI.png" },
+  { id: 10, name: "Client 5",  logo: "https://res.cloudinary.com/drmwtarrs/image/upload/f_auto,q_auto/hod/logos/HOSPITAL.png" },
+  { id: 11, name: "Client 9",  logo: "https://res.cloudinary.com/drmwtarrs/image/upload/f_auto,q_auto/hod/logos/PARKSONS.png" },
+  { id: 13, name: "Client 13", logo: "https://res.cloudinary.com/drmwtarrs/image/upload/f_auto,q_auto/hod/logos/SVU.png" },
+  { id: 12, name: "Client 10", logo: "https://res.cloudinary.com/drmwtarrs/image/upload/f_auto,q_auto/hod/logos/Phoenix_Insurance.png" },
 ];
 
 function MarqueeTrack({ brands, speed = 38 }) {

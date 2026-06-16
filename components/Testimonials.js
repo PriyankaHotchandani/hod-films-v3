@@ -2,10 +2,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-// CSS injected client-side only to avoid SSR/hydration mismatch.
-// The SVG data-URI in .hod-grain::before contains characters that
-// React's server renderer and the browser serialize differently,
-// causing the "Text content did not match" hydration error.
 const HOD_STYLES = `
   @keyframes recBlink {
     0%, 49% { opacity: 1; }
@@ -25,43 +21,32 @@ const HOD_STYLES = `
     mix-blend-mode: overlay;
   }
 
-  .hod-scene-btn {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    padding: 6px 14px;
-    border: 1px solid transparent;
-    background: transparent;
-    cursor: pointer;
-    transition: border-color 0.2s, color 0.2s;
-  }
-
-  .hod-crosshair-h {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 16px;
-    height: 1px;
-  }
-  .hod-crosshair-v {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 1px;
-    height: 16px;
+  .hod-quote-text {
+    min-height: 380px !important; 
+    height: 380px !important;
+    display: flex;
+    align-items: center;
+    overflow-y: auto; 
   }
 
   @media (max-width: 768px) {
-    .hod-quote-text { font-size: 1.15rem !important; }
+    .hod-quote-text { 
+        font-size: 1.15rem !important; 
+        /* Strict height keeps the layout locked */
+        height: 380px !important; 
+        min-height: 380px !important;
+        /* Enables scrolling for long quotes like Parth's */
+        overflow-y: auto; 
+        /* Clean scrollbar for modern feel */
+        scrollbar-width: none; 
+        -ms-overflow-style: none;
+    }
+    .hod-quote-text::-webkit-scrollbar { display: none; }
+    
     .hod-layout-grid { grid-template-columns: 1fr !important; }
     .hod-right-panel { display: none; }
   }
 `
-
-// ─── Data ────────────────────────────────────────────────────────────────────
 
 const testimonials = [
   {
@@ -119,6 +104,12 @@ function TypewriterText({ text, onComplete, accentColor }) {
     setDisplayed('')
     setDone(false)
     indexRef.current = 0
+
+    if (indexRef.current >= text.length) {
+      clearInterval(interval)
+      setDone(true)
+      onComplete?.() // This signals to the main component that typing is finished
+    }
 
     // slight initial delay so flash-frame settles first
     const init = setTimeout(() => {
@@ -270,11 +261,15 @@ export default function Testimonials() {
 
   const next = useCallback(() => goTo(active + 1), [active, goTo])
 
-  // Auto-advance: 7s, but only once typewriter has finished
+  // Auto-advance logic: Wait 4 seconds AFTER typing finishes
   useEffect(() => {
-    autoTimer.current = setTimeout(next, 7000)
-    return () => clearTimeout(autoTimer.current)
-  }, [active])
+    if (!isTyping) {
+      // Clear any existing timer to prevent mid-type switching
+      clearTimeout(autoTimer.current);
+      autoTimer.current = setTimeout(next, 4000);
+    }
+    return () => clearTimeout(autoTimer.current);
+  }, [isTyping, next]);
 
   // Timecode ticks forward every ~6 frames while idle
   useEffect(() => {
@@ -368,10 +363,9 @@ export default function Testimonials() {
           <div>2.39:1 &nbsp;·&nbsp; 24p</div>
         </div>
 
-        {/* ── Main content ── */}
         <div
           className="relative z-10 flex flex-col justify-center"
-          style={{ minHeight: '90vh', padding: '96px 52px 80px' }}
+          style={{ minHeight: '90vh', padding: '40px 24px 40px 24px' }}
         >
           <div className="max-w-7xl mx-auto w-full">
             {/* Section eyebrow */}
@@ -429,7 +423,8 @@ export default function Testimonials() {
                     fontWeight: 400,
                     fontStyle: 'italic',
                     margin: 0,
-                    minHeight: '8em', // prevents layout shift while typing
+                    width: '100%',     // Force full width
+                    display: 'block'   // Prevent dynamic wrapping reflow
                   }}
                 >
                   <TypewriterText
@@ -448,7 +443,7 @@ export default function Testimonials() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
-                    style={{ marginTop: '2.5rem' }}
+                    style={{ marginTop: '1.5rem' }}
                   >
                     {/* Accent rule */}
                     <div
@@ -500,7 +495,7 @@ export default function Testimonials() {
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '0.5rem',
-                  paddingTop: '3rem',
+                  paddingTop: '1rem',
                 }}
               >
                 <div

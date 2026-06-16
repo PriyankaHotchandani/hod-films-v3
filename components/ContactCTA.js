@@ -293,14 +293,12 @@ export default function ContactCTA() {
         <FadeUp delay={0.32}>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <div
+              className="flex flex-col sm:flex-row items-center gap-3 sm:gap-2"
               style={{
                 fontFamily: "'DM Mono', monospace",
                 fontSize: '0.62rem',
                 letterSpacing: '0.18em',
                 textTransform: 'uppercase',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
               }}
             >
               <a href="mailto:mehul@houseofdoshi.com" className="section-label text-white/60 hover:text-white transition-colors" style={{ textDecoration: 'none' }}>
@@ -318,7 +316,7 @@ export default function ContactCTA() {
             </div>
           </div>
         </FadeUp>
-      </div> {/* <--- THIS IS THE MISSING DIV THAT CLOSES THE MAIN CONTENT */}
+      </div>
 
       {/* ── Footer Row — Film Slate ── */}
       <div
