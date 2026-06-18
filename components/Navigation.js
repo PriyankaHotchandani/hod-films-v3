@@ -20,6 +20,15 @@ export default function Navigation() {
     { label: 'Contact', href: '#contact' },
   ]
 
+  const handleNavClick = (e, targetId) => {
+    e.preventDefault();
+    const element = document.querySelector(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    setMenuOpen(false);
+  };
+
   return (
     <>
       <motion.nav
@@ -81,6 +90,7 @@ export default function Navigation() {
               <a
                 key={link.label}
                 href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
                 className="section-label text-white/70 hover:text-white transition-colors duration-300"
                 style={{ fontSize: '0.68rem', letterSpacing: '0.18em' }}
               >
@@ -112,12 +122,12 @@ export default function Navigation() {
                   <motion.a
                     key={link.label}
                     href={link.href}
+                    onClick={(e) => handleNavClick(e, link.href)} // Add the click handler here too
                     initial={{ opacity: 0, x: -40 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -40 }}
                     transition={{ duration: 0.5, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
                     className="block py-3 border-b border-white/5 group text-left"
-                    onClick={() => setMenuOpen(false)}
                   >
                     <span
                       style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(2rem, 5vw, 3.5rem)', letterSpacing: '0.06em' }}

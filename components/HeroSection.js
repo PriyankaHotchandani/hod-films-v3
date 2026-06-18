@@ -18,8 +18,6 @@ export default function HeroSection() {
     const video = videoRef.current
     if (!video) return
 
-    // Once the 720p version is playing, silently preload 1080p in the background.
-    // When it's ready, swap — the video keeps playing without interruption.
     function upgradeToHD() {
       // Only upgrade on non-mobile screens and decent connections
       const isMobile = window.innerWidth <= 767
