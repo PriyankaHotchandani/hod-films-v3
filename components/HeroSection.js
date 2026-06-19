@@ -3,27 +3,58 @@ import { useRef, useEffect, useState } from 'react'
 import { motion, animate, useMotionValue } from 'framer-motion'
 
 const CLOUDINARY_BASE = 'https://res.cloudinary.com/drmwtarrs/video/upload'
+const SRC_MOBILE = `${CLOUDINARY_BASE}/w_1280,q_65,f_auto/hod/hero/SHOWREEL_MOBILE.mp4`
 const SRC_720 = `${CLOUDINARY_BASE}/w_1280,q_65,f_auto/hod/hero/SHOWREEL_4K.mp4`
 const SRC_1080 = `${CLOUDINARY_BASE}/w_1920,q_70,f_auto/hod/hero/SHOWREEL_4K.mp4`
 
 export default function HeroSection() {
   const videoRef = useRef(null)
   const [paused, setPaused] = useState(false)
-  const [muted, setMuted] = useState(true)
+  const [muted, setMuted] = useState(false) // default: sound ON
+  const [isMobile, setIsMobile] = useState(false)
 
-  // Always start at 720p for fast first-paint on any connection
+  // Mobile gets its own showreel; desktop/tablet start at 720p and upgrade to 1080p
   const [videoSrc, setVideoSrc] = useState(SRC_720)
 
+  // Detect mobile on mount and pick the right source
+  useEffect(() => {
+    const mobile = window.innerWidth <= 767
+    setIsMobile(mobile)
+    setVideoSrc(mobile ? SRC_MOBILE : SRC_720)
+  }, [])
+
+  // Autoplay with sound where possible; if the browser blocks unmuted
+  // autoplay, fall back to muted autoplay so the video still plays.
   useEffect(() => {
     const video = videoRef.current
     if (!video) return
 
+    async function tryAutoplay() {
+      video.muted = false
+      try {
+        await video.play()
+        setMuted(false)
+      } catch {
+        // Browser blocked unmuted autoplay — fall back to muted
+        video.muted = true
+        setMuted(true)
+        video.play().catch(() => { })
+      }
+    }
+    tryAutoplay()
+  }, [videoSrc])
+
+  // Desktop/tablet only: silently upgrade 720p -> 1080p once playing smoothly
+  useEffect(() => {
+    if (isMobile) return // mobile uses its own fixed-resolution showreel, no upgrade
+
+    const video = videoRef.current
+    if (!video) return
+
     function upgradeToHD() {
-      // Only upgrade on non-mobile screens and decent connections
-      const isMobile = window.innerWidth <= 767
       const slowConn = navigator.connection?.effectiveType === '2g' ||
         navigator.connection?.effectiveType === 'slow-2g'
-      if (isMobile || slowConn) return
+      if (slowConn) return
 
       const preload = document.createElement('video')
       preload.src = SRC_1080
@@ -31,27 +62,25 @@ export default function HeroSection() {
       preload.muted = true
 
       preload.addEventListener('canplaythrough', () => {
-        // Capture current playback position so upgrade is seamless
         const currentTime = video.currentTime
+        const wasMuted = video.muted
         setVideoSrc(SRC_1080)
-        // Restore position after React re-renders the new src
         requestAnimationFrame(() => {
           if (videoRef.current) {
             videoRef.current.currentTime = currentTime
+            videoRef.current.muted = wasMuted
             videoRef.current.play().catch(() => { })
           }
         })
       }, { once: true })
     }
 
-    // Wait until 720p is playing before starting the upgrade preload
     video.addEventListener('playing', upgradeToHD, { once: true })
-    video.play().catch(() => { })
 
     return () => {
       video.removeEventListener('playing', upgradeToHD)
     }
-  }, [])
+  }, [isMobile, videoSrc])
 
   function togglePause() {
     if (!videoRef.current) return
@@ -73,7 +102,7 @@ export default function HeroSection() {
           key={videoSrc}
           className="w-full h-full object-cover"
           autoPlay
-          muted
+          muted={muted}
           loop
           playsInline
           controls={false}
