@@ -82,11 +82,9 @@ export default function HeroSection() {
           src={videoSrc}
         />
 
-        {/* Film grain has been completely removed to preserve 4K sharpness */}
       </div>
 
       {/* ── GRADIENT OVERLAY ── */}
-      {/* Keep this gradient VERY subtle in your CSS, or it will flatten the contrast of your footage */}
       <div className="video-overlay absolute inset-0 z-10" />
 
       {/* ── BOTTOM-ANCHORED HEADLINE (only text on screen) ── */}
