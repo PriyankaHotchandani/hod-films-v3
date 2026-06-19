@@ -3,6 +3,38 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
 import Image from 'next/image'
 
+const CLOUDINARY_VIDEO_BASE = 'https://res.cloudinary.com/drmwtarrs/video/upload'
+
+// Returns a Cloudinary delivery URL sized for the current viewport.
+// Mobile gets a much lighter file; desktop gets the full 1600px version.
+function buildVideoSrc(publicId, width) {
+  return `${CLOUDINARY_VIDEO_BASE}/w_${width},q_auto,f_auto/${publicId}`
+}
+
+// Tracks viewport width and returns the right video resolution.
+// 720px on phones, 1080px on tablets, 1600px on desktop.
+function useResponsiveVideoWidth() {
+  const [width, setWidth] = useState(1600) // default desktop-first for SSR
+
+  useEffect(() => {
+    function pickWidth() {
+      const w = window.innerWidth
+      if (w <= 767) return 720
+      if (w <= 1279) return 1080
+      return 1600
+    }
+    setWidth(pickWidth())
+
+    function handleResize() {
+      setWidth(pickWidth())
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  return width
+}
+
 const projects = [
   {
     id: 1,
@@ -11,7 +43,7 @@ const projects = [
     description: 'From a blank canvas to cinematic execution in 20 days. When tasked with showcasing an upcoming library, we built the vision from the ground up—developing the concepts, shaping the narrative, and delivering the final visuals to communicate the true physical and philosophical impact of the space.',
     year: '2024',
     available: true,
-    videoSrc: 'https://res.cloudinary.com/drmwtarrs/video/upload/w_1600,q_auto,f_auto/hod/hypercuts/Sahir.mp4',
+    videoId: 'hod/hypercuts/Sahir.mp4',
     imageSrc: 'https://res.cloudinary.com/drmwtarrs/image/upload/w_1600,f_auto,q_auto/hod/thumbnails/SAHIR.png',
     assetLabel: '[ Sahir Library Tour — Key Art ]',
     bgGradient: 'linear-gradient(160deg, #12192e 0%, #1a2a4a 45%, #0d1520 100%)',
@@ -24,7 +56,7 @@ const projects = [
     description: 'In the healthcare sector, presentation and trust go hand in hand. A hospital needs to project absolute confidence to its patients. We spent three days on site at K J Somaiya Hospital and Medical Research Centre. We carefully staged and filmed their unique healthcare services in action. The final assets gave them exactly what they needed to build a stronger brand presence across their website and social media.',
     year: '2024',
     available: true,
-    videoSrc: 'https://res.cloudinary.com/drmwtarrs/video/upload/w_1600,q_auto,f_auto/hod/hypercuts/Ayurvihar.mp4',
+    videoId: 'hod/hypercuts/Ayurvihar.mp4',
     imageSrc: 'https://res.cloudinary.com/drmwtarrs/image/upload/w_1600,f_auto,q_auto/hod/thumbnails/AYURVIHAR.png',
     assetLabel: '[ K J Somaiya Hospital & Medical Research Centre — Key Art ]',
     bgGradient: 'linear-gradient(160deg, #1a0808 0%, #2d1010 45%, #120606 100%)',
@@ -37,7 +69,7 @@ const projects = [
     description: 'Two years ago, KJSIM launched their Transforming Together initiative. As those same students prepared to graduate, the goal was to document their actual growth. We spent three days conducting deep, detailed interviews with over ten students. Their honest experiences shaped ten distinct twenty minute episodes. The result is a series built entirely on real voices and authentic stories of personal transformation.',
     year: '2023',
     available: true,
-    videoSrc: 'https://res.cloudinary.com/drmwtarrs/video/upload/w_1600,q_auto,f_auto/hod/hypercuts/TAKE_TWO.mp4',
+    videoId: 'hod/hypercuts/TAKE_TWO.mp4',
     imageSrc: 'https://res.cloudinary.com/drmwtarrs/image/upload/w_1600,f_auto,q_auto/hod/thumbnails/TAKE_TWO.png',
     assetLabel: '[ Take Two - KJSIM — Key Art ]',
     bgGradient: 'linear-gradient(160deg, #1e1506 0%, #2e200a 45%, #160f04 100%)',
@@ -50,7 +82,7 @@ const projects = [
     description: 'If you are a school of music and performing arts, the best way to advertise is to show exactly what you do. We decided a full music video was the perfect format. We wrapped production in two days and delivered the final cut in ten. That is how Maniyaara was born.',
     year: '2023',
     available: true,
-    videoSrc: 'https://res.cloudinary.com/drmwtarrs/video/upload/w_1600,q_auto,f_auto/hod/hypercuts/MAYA.mp4',
+    videoId: 'hod/hypercuts/MAYA.mp4',
     imageSrc: 'https://res.cloudinary.com/drmwtarrs/image/upload/w_1600,f_auto,q_auto/v1781606725/hod/thumbnails/MAYA.jpg',
     assetLabel: '[ Maniyaara - Maya Somaiya School of Music & Performing Arts — Key Art ]',
     bgGradient: 'linear-gradient(160deg, #060612 0%, #0d0d28 45%, #08080f 100%)',
@@ -63,7 +95,7 @@ const projects = [
     description: 'We got the call on January 12th with a strict deadline. The opening event was on the 26th, and the client trusted us to deliver. Eight days later, the final cut was approved and ready to screen. We created a purely visual story without dialogue. It combined energetic action shots with clear infrastructure establishment. It was a high stakes sprint that resulted in a lasting brand film and a very happy client.',
     year: '2022',
     available: true,
-    videoSrc: 'https://res.cloudinary.com/drmwtarrs/video/upload/w_1600,q_auto,f_auto/hod/hypercuts/SSA.mp4',
+    videoId: 'hod/hypercuts/SSA.mp4',
     imageSrc: 'https://res.cloudinary.com/drmwtarrs/image/upload/w_1600,f_auto,q_auto/hod/thumbnails/SSA.png',
     assetLabel: '[ Unleash Potential - Somaiya Sports Academy — Key Art ]',
     bgGradient: 'linear-gradient(160deg, #0f1510 0%, #1a2418 45%, #0a0f0b 100%)',
@@ -76,7 +108,7 @@ const projects = [
     description: 'Sometimes you just need the right partner to help get your voice out there. Our podcast production service is built to handle exactly that. A dedicated content producer helps structure your episodes. Then, our technical crew steps in to record everything cleanly. Finally, our editors shape the raw audio and video into a polished package ready for the world.',
     year: '2025',
     available: false,
-    videoSrc: 'https://res.cloudinary.com/drmwtarrs/video/upload/w_1600,q_auto,f_auto/hod/hypercuts/PODCASTS.mp4',
+    videoId: 'hod/hypercuts/PODCASTS.mp4',
     imageSrc: 'https://res.cloudinary.com/drmwtarrs/image/upload/w_1600,f_auto,q_auto/hod/thumbnails/PODCASTS.png',
     assetLabel: '[ Podcasts — Key Art ]',
     bgGradient: 'linear-gradient(160deg, #10100f 0%, #1a1a18 45%, #0c0c0b 100%)',
@@ -86,28 +118,29 @@ const projects = [
 
 function ProjectCard({ project, isHovered, onMouseEnter, onMouseLeave }) {
   const videoRef = useRef(null)
+  const videoWidth = useResponsiveVideoWidth()
+  const videoSrc = project.videoId ? buildVideoSrc(project.videoId, videoWidth) : null
 
   const handleMouseEnter = useCallback(() => {
     onMouseEnter()
-    if (videoRef.current && project.videoSrc) {
+    if (videoRef.current && videoSrc) {
       videoRef.current.currentTime = 0
       videoRef.current.play().catch(() => { })
     }
-  }, [onMouseEnter, project.videoSrc])
+  }, [onMouseEnter, videoSrc])
 
   const handleMouseLeave = useCallback(() => {
     onMouseLeave()
-    if (videoRef.current && project.videoSrc) {
+    if (videoRef.current && videoSrc) {
       videoRef.current.pause()
       videoRef.current.currentTime = 0
     }
-  }, [onMouseLeave, project.videoSrc])
+  }, [onMouseLeave, videoSrc])
 
   return (
     <motion.div
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      // Width-only expansion: flex-grow controls width; height is locked by the row.
       animate={{ flexGrow: isHovered ? 2.2 : 1 }}
       transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
       style={{
@@ -117,16 +150,13 @@ function ProjectCard({ project, isHovered, onMouseEnter, onMouseLeave }) {
         position: 'relative',
         borderRadius: '10px',
         overflow: 'hidden',
-        // Removed cursor: 'pointer' because it is no longer clickable
-        // Height is constrained by the parent row — do NOT set height here.
       }}
     >
-      {/* ── Removed the <a> tag wrapper ── */}
       <div style={{ position: 'relative', width: '100%', height: '100%' }}>
 
         {/* ── Layer 1: Static image (always visible by default) ── */}
         <motion.div
-          animate={{ opacity: (isHovered && project.videoSrc) ? 0 : 1 }}
+          animate={{ opacity: (isHovered && videoSrc) ? 0 : 1 }}
           transition={{ duration: 0.45, ease: 'easeInOut' }}
           style={{ position: 'absolute', inset: 0, background: project.bgGradient }}
         >
@@ -162,10 +192,11 @@ function ProjectCard({ project, isHovered, onMouseEnter, onMouseLeave }) {
         </motion.div>
 
         {/* ── Layer 2: Video — crossfades in on hover, fades out on leave ── */}
-        {project.videoSrc && (
+        {videoSrc && (
           <motion.video
+            key={videoSrc}
             ref={videoRef}
-            src={project.videoSrc}
+            src={videoSrc}
             loop
             muted
             playsInline
@@ -282,8 +313,6 @@ function ProjectCard({ project, isHovered, onMouseEnter, onMouseLeave }) {
           </div>
         </motion.div>
 
-        {/* ── Layer 6: Arrow Icon Removed Entirely ── */}
-
       </div>
     </motion.div>
   )
@@ -346,7 +375,6 @@ function SectionHeader() {
       </div>
 
       {/* Headline line 2 + tagline block */}
-      {/* ADDED: Tailwind classes to handle responsive stacking */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 mt-1 md:mt-0">
         <div style={{ overflow: 'hidden', paddingRight: '12px' }}>
           <motion.h2
@@ -360,7 +388,7 @@ function SectionHeader() {
               lineHeight: 0.95,
               color: '#6a6a6a',
               margin: 0,
-              whiteSpace: 'nowrap', // Ensures text never wraps and clips
+              whiteSpace: 'nowrap',
             }}
           >
             we’ve told…
@@ -371,11 +399,9 @@ function SectionHeader() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.85, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          // ADDED: Tailwind classes to align left on mobile, right on desktop
           className="flex flex-col items-start md:items-end shrink-0 md:max-w-[260px] pt-2 md:pt-0"
         >
           <p
-            // ADDED: Text alignment controlled by screen size
             className="text-left md:text-right"
             style={{
               fontFamily: "'DM Sans', sans-serif",
@@ -399,6 +425,8 @@ function MobileCard({ project }) {
   const cardRef = useRef(null)
   const videoRef = useRef(null)
 
+  const videoSrc = project.videoId ? buildVideoSrc(project.videoId, 720) : null
+
   // Fade-in animation for the card itself
   const isCardInView = useInView(cardRef, { once: true, margin: '-40px' })
 
@@ -407,14 +435,14 @@ function MobileCard({ project }) {
 
   // Automatically play or pause the video based on scroll position
   useEffect(() => {
-    if (videoRef.current && project.videoSrc) {
+    if (videoRef.current && videoSrc) {
       if (isVideoInView) {
         videoRef.current.play().catch(() => { })
       } else {
         videoRef.current.pause()
       }
     }
-  }, [isVideoInView, project.videoSrc])
+  }, [isVideoInView, videoSrc])
 
   return (
     <motion.div
@@ -428,13 +456,12 @@ function MobileCard({ project }) {
         overflow: 'hidden',
         background: project.bgGradient,
         position: 'relative',
-        // Taller aspect ratio prevents text crushing on long titles
         aspectRatio: '1 / 1',
       }}>
 
         {/* ── Layer 1: Image (Fades out when video plays) ── */}
         <motion.div
-          animate={{ opacity: isVideoInView && project.videoSrc ? 0 : 1 }}
+          animate={{ opacity: isVideoInView && videoSrc ? 0 : 1 }}
           transition={{ duration: 0.5 }}
           style={{ position: 'absolute', inset: 0 }}
         >
@@ -456,10 +483,10 @@ function MobileCard({ project }) {
         </motion.div>
 
         {/* ── Layer 2: Video Player (Autoplays on scroll) ── */}
-        {project.videoSrc && (
+        {videoSrc && (
           <motion.video
             ref={videoRef}
-            src={project.videoSrc}
+            src={videoSrc}
             loop
             muted
             playsInline
@@ -583,15 +610,14 @@ function SquareRow({ rowProjects }) {
       position: 'relative',
       width: '100%',
       height: 0,
-      paddingBottom: 'calc(50% - 6px)', // locks height = 1 card width = perfect square
+      paddingBottom: 'calc(50% - 6px)',
     }}>
-      {/* Inner flex row — absolutely fills the height-locked outer box */}
       <div style={{
         position: 'absolute',
         inset: 0,
         display: 'flex',
         gap: '12px',
-        overflow: 'hidden', // hard clamp: no card can escape the container
+        overflow: 'hidden',
       }}>
         {rowProjects.map((project) => (
           <ProjectCard
