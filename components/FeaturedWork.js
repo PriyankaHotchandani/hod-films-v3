@@ -60,7 +60,7 @@ const projects = [
     videoId: 'hod/hypercuts/Ayurvihar.mp4',
     imageSrc: 'https://res.cloudinary.com/drmwtarrs/image/upload/w_1600,f_auto,q_auto/hod/thumbnails/AYURVIHAR.png',
     assetLabel: '[ K J Somaiya Hospital & Medical Research Centre — Key Art ]',
-    youtubeUrl: '', // TODO: replace with the actual KJ Somaiya Hospital YouTube link
+    youtubeUrl: 'https://www.youtube.com/watch?v=yoJhDhiGlTI',
     bgGradient: 'linear-gradient(160deg, #1a0808 0%, #2d1010 45%, #120606 100%)',
     accentRgb: '200, 80, 60',
   },
