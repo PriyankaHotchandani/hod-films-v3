@@ -46,6 +46,7 @@ const projects = [
     videoId: 'hod/hypercuts/Sahir.mp4',
     imageSrc: 'https://res.cloudinary.com/drmwtarrs/image/upload/w_1600,f_auto,q_auto/hod/thumbnails/SAHIR.png',
     assetLabel: '[ Sahir Library Tour — Key Art ]',
+    youtubeUrl: 'https://youtu.be/0KrjAAkmcTY?si=1sqauh_z1sKK80r',
     bgGradient: 'linear-gradient(160deg, #12192e 0%, #1a2a4a 45%, #0d1520 100%)',
     accentRgb: '100, 140, 220',
   },
@@ -59,6 +60,7 @@ const projects = [
     videoId: 'hod/hypercuts/Ayurvihar.mp4',
     imageSrc: 'https://res.cloudinary.com/drmwtarrs/image/upload/w_1600,f_auto,q_auto/hod/thumbnails/AYURVIHAR.png',
     assetLabel: '[ K J Somaiya Hospital & Medical Research Centre — Key Art ]',
+    youtubeUrl: '', // TODO: replace with the actual KJ Somaiya Hospital YouTube link
     bgGradient: 'linear-gradient(160deg, #1a0808 0%, #2d1010 45%, #120606 100%)',
     accentRgb: '200, 80, 60',
   },
@@ -72,6 +74,7 @@ const projects = [
     videoId: 'hod/hypercuts/TAKE_TWO.mp4',
     imageSrc: 'https://res.cloudinary.com/drmwtarrs/image/upload/w_1600,f_auto,q_auto/hod/thumbnails/TAKE_TWO.png',
     assetLabel: '[ Take Two - KJSIM — Key Art ]',
+    youtubeUrl: 'https://youtube.com/playlist?list=PL1_FNO_sdTfjZE4CwZLD5hlT_cwIO0jer&si=lKXcdeHm9CG8QA_4',
     bgGradient: 'linear-gradient(160deg, #1e1506 0%, #2e200a 45%, #160f04 100%)',
     accentRgb: '212, 175, 55',
   },
@@ -85,6 +88,7 @@ const projects = [
     videoId: 'hod/hypercuts/MAYA.mp4',
     imageSrc: 'https://res.cloudinary.com/drmwtarrs/image/upload/w_1600,f_auto,q_auto/v1781606725/hod/thumbnails/MAYA.jpg',
     assetLabel: '[ Maniyaara - Maya Somaiya School of Music & Performing Arts — Key Art ]',
+    youtubeUrl: 'https://youtu.be/410Gm4kKYO4?si=_GisYeLcerdVXSFP',
     bgGradient: 'linear-gradient(160deg, #060612 0%, #0d0d28 45%, #08080f 100%)',
     accentRgb: '120, 100, 240',
   },
@@ -98,6 +102,7 @@ const projects = [
     videoId: 'hod/hypercuts/SSA.mp4',
     imageSrc: 'https://res.cloudinary.com/drmwtarrs/image/upload/w_1600,f_auto,q_auto/hod/thumbnails/SSA.png',
     assetLabel: '[ Unleash Potential - Somaiya Sports Academy — Key Art ]',
+    youtubeUrl: 'https://youtu.be/qOXPHShs0LM?si=LMXPVpcG2xpP_aT2',
     bgGradient: 'linear-gradient(160deg, #0f1510 0%, #1a2418 45%, #0a0f0b 100%)',
     accentRgb: '90, 170, 100',
   },
@@ -111,6 +116,7 @@ const projects = [
     videoId: 'hod/hypercuts/PODCASTS.mp4',
     imageSrc: 'https://res.cloudinary.com/drmwtarrs/image/upload/w_1600,f_auto,q_auto/hod/thumbnails/PODCASTS.png',
     assetLabel: '[ Podcasts — Key Art ]',
+    youtubeUrl: 'https://youtu.be/tXIwwiZ4I7k?si=7sd36272V33jAmLa',
     bgGradient: 'linear-gradient(160deg, #10100f 0%, #1a1a18 45%, #0c0c0b 100%)',
     accentRgb: '180, 180, 170',
   },
@@ -152,7 +158,13 @@ function ProjectCard({ project, isHovered, onMouseEnter, onMouseLeave }) {
         overflow: 'hidden',
       }}
     >
-      <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <a
+        href={project.youtubeUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Watch ${project.title} on YouTube`}
+        style={{ display: 'block', position: 'relative', width: '100%', height: '100%' }}
+      >
 
         {/* ── Layer 1: Static image (always visible by default) ── */}
         <motion.div
@@ -313,7 +325,7 @@ function ProjectCard({ project, isHovered, onMouseEnter, onMouseLeave }) {
           </div>
         </motion.div>
 
-      </div>
+      </a>
     </motion.div>
   )
 }
@@ -451,13 +463,20 @@ function MobileCard({ project }) {
       animate={isCardInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
     >
-      <div style={{
-        borderRadius: '10px',
-        overflow: 'hidden',
-        background: project.bgGradient,
-        position: 'relative',
-        aspectRatio: '1 / 1',
-      }}>
+      <a
+        href={project.youtubeUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Watch ${project.title} on YouTube`}
+        style={{
+          display: 'block',
+          borderRadius: '10px',
+          overflow: 'hidden',
+          background: project.bgGradient,
+          position: 'relative',
+          aspectRatio: '1 / 1',
+        }}
+      >
 
         {/* ── Layer 1: Image (Fades out when video plays) ── */}
         <motion.div
@@ -541,7 +560,7 @@ function MobileCard({ project }) {
           </div>
         </div>
 
-      </div>
+      </a>
     </motion.div>
   )
 }
